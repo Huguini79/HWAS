@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>HWAS</title>
+    <style>
+      .panel {
+        display: inline-block;
+        background-color: yellow;
+        border-radius: 15px;
+        padding: 20px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>HWAS</h1>
+    </header>
+    <br><br>
+    <div class="panel">
+      <br>
+      <label>HWAS: Bienvenido a HWAS, el sitio donde podrá hacer búsquedas avanzadas y seguras.</label>
+      <br><br>
+      <label>HWAS: ¿En qué le gustaría que le ayude en el día de hoy?</label>
+      <br><br>
+      <div id="respuestas"></div>
+      <br><br>
+      <input style="border-radius: 50px; width: 500px; height: 25px;" type="text" id="entrada_mensaje">
+      <button style="width: 100px; height: 50px;" id="boton_enviar">Enviar</button>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('boton_enviar').addEventListener('click', function() {
+          const mensaje = document.getElementById('entrada_mensaje').value.trim();
+          const mensaje_codificado = encodeURIComponent(mensaje);
+          const url = `https://es.wikipedia.org/api/rest_v1/page/summary/${mensaje_codificado}`;
+          
+          document.getElementById('respuestas').innerText += `Tú: ${mensaje}\n\n`;
+          
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("No se ha podido encontrar la información necesaria...");
+              }
+              return response.json();
+            })
+            .then(data => {
+              document.getElementById('respuestas').innerText += `HWAS: ${data.extract}\n\n`;
+            })
+            .catch(err => {
+              document.getElementById('respuestas').innerText += `HWAS: Hubo un error: ${err.message}`;
+            });
+
+          
+        });
+      });
+    </script>
+  </body>
+</html>
